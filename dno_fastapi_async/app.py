@@ -1,17 +1,20 @@
 from fastapi import FastAPI
 from http import HTTPStatus
-from dno_fastapi_async.schema import (
-    Message,
+
+from dno_fastapi_async.schema.message import MessageSchema
+
+from dno_fastapi_async.schema.user import (
     UserCreateSchema,
-    UserPublicSchema,
     UserPrivateSchema,
+    UserPublicSchema,
+    UserList,
 )
 
 app = FastAPI()
 database = []
 
 
-@app.get(path="/", status_code=HTTPStatus.OK, response_model=Message)
+@app.get(path="/", status_code=HTTPStatus.OK, response_model=MessageSchema)
 def home():
     return {"message": "Fast Works!"}
 
@@ -32,3 +35,8 @@ def create_user(user: UserCreateSchema):
     database.append(user_with_id)
 
     return user_with_id
+
+
+@app.get(path="/users", response_model=UserList)
+def get_users():
+    return {"users": database}

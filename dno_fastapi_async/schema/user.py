@@ -1,10 +1,6 @@
 from pydantic import BaseModel, EmailStr
 
 
-class Message(BaseModel):
-    message: str
-
-
 class UserBase(BaseModel):
     username: str
     email: EmailStr
@@ -20,3 +16,7 @@ class UserPublicSchema(UserBase):
 
 class UserPrivateSchema(UserCreateSchema):
     id: int
+
+
+class UserList(BaseModel):
+    users: list[UserPublicSchema]
