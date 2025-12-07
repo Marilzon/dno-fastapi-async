@@ -62,11 +62,10 @@ def test_update_user(client):
         "id": 1,
     }
 
-def test_update_user_not_exists(client):
-    user_id = 999
 
+def test_update_user_not_exists(client):
     response = client.put(
-        f"users/{user_id}",
+        "users/999",
         json={
             "username": "max",
             "email": "max@max.com",
@@ -75,6 +74,22 @@ def test_update_user_not_exists(client):
     )
 
     assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {
-        "detail": "User not found"
-    }
+    assert response.json() == {"detail": "User '999' not found"}
+
+
+def test_delete_user(client):
+    response = client.delete(
+        "users/1",
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {"message": "User '1' removed"}
+
+
+def test_delete_user_not_exists(client):
+    response = client.delete(
+        "users/999",
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {"detail": "User '999' not found"}

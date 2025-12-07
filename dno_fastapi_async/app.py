@@ -44,15 +44,30 @@ def get_users():
 
 @app.put(path="/users/{user_id}", response_model=UserPublicSchema)
 def update_user(user_id: int, user: UserCreateSchema):
-
     exists = next((True for item in database if item.id == user_id), False)
 
     if not exists:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail="User not found"
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"User '{user_id}' not found",
         )
 
     user_with_id = UserPrivateSchema(id=user_id, **user.model_dump())
     database[user_id - 1] = user_with_id
 
     return user_with_id
+
+
+@app.delete(path="/users/{user_id}")
+def delete_user(user_id: int):
+    exists = next((True for item in database if item.id == user_id), False)
+
+    if not exists:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail=f"User '{user_id}' not found",
+        )
+
+    del database[user_id - 1]
+
+    return {"message": f"User '{user_id}' removed"}
