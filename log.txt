@@ -1,0 +1,220 @@
+All checks passed!
+============================= test session starts ==============================
+platform linux -- Python 3.14.0, pytest-8.4.2, pluggy-1.6.0 -- /home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/c/code/data-engineer/dno-fastapi-async
+configfile: pyproject.toml
+plugins: cov-7.0.0, anyio-4.11.0
+collecting ... collected 6 items
+
+tests/dno_fastapi_async/test_app.py::test_home PASSED
+tests/dno_fastapi_async/test_app.py::test_about PASSED
+tests/dno_fastapi_async/test_app.py::test_create_user PASSED
+tests/dno_fastapi_async/test_app.py::test_get_users PASSED
+tests/dno_fastapi_async/test_app.py::test_update_user PASSED
+tests/dno_fastapi_async/test_app.py::test_update_user_not_exists FAILED
+
+=================================== FAILURES ===================================
+_________________________ test_update_user_not_exists __________________________
+
+self = <WorkerThread(AnyIO worker thread, stopped daemon 133218270611136)>
+
+    def run(self) -> None:
+        with claim_worker_thread(AsyncIOBackend, self.loop):
+            while True:
+                item = self.queue.get()
+                if item is None:
+                    # Shutdown command received
+                    return
+    
+                context, func, args, future, cancel_scope = item
+                if not future.cancelled():
+                    result = None
+                    exception: BaseException | None = None
+                    threadlocals.current_cancel_scope = cancel_scope
+                    try:
+>                       result = context.run(func, *args)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/anyio/_backends/_asyncio.py:976: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+user_id = 999
+user = UserCreateSchema(username='max', email='max@max.com', password='new_secret')
+
+    @app.put(path="/users/{user_id}", response_model=UserPublicSchema)
+    def update_user(user_id: int, user: UserCreateSchema):
+    
+>       exists = next((True for item in database if item.id == user_id))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       StopIteration
+
+dno_fastapi_async/app.py:48: StopIteration
+
+The above exception was the direct cause of the following exception:
+
+client = <starlette.testclient.TestClient object at 0x79294c4d8a70>
+
+    def test_update_user_not_exists(client):
+        user_id = 999
+    
+>       response = client.put(
+            f"users/{user_id}",
+            json={
+                "username": "max",
+                "email": "max@max.com",
+                "password": "new_secret",
+            },
+        )
+
+tests/dno_fastapi_async/test_app.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/testclient.py:583: in put
+    return super().put(
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/httpx/_client.py:1181: in put
+    return self.request(
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/testclient.py:451: in request
+    return super().request(
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/httpx/_client.py:825: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/httpx/_client.py:914: in send
+    response = self._send_handling_auth(
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/httpx/_client.py:942: in _send_handling_auth
+    response = self._send_handling_redirects(
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/httpx/_client.py:979: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/httpx/_client.py:1014: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/testclient.py:354: in handle_request
+    raise exc
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/testclient.py:351: in handle_request
+    portal.call(self.app, scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/anyio/from_thread.py:321: in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/maxma/.local/share/pypoetry/python/cpython@3.14.0/lib/python3.14/concurrent/futures/_base.py:450: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/home/maxma/.local/share/pypoetry/python/cpython@3.14.0/lib/python3.14/concurrent/futures/_base.py:395: in __get_result
+    raise self._exception
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/anyio/from_thread.py:252: in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/fastapi/applications.py:1134: in __call__
+    await super().__call__(scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/applications.py:113: in __call__
+    await self.middleware_stack(scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/routing.py:716: in __call__
+    await self.middleware_stack(scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/routing.py:736: in app
+    await route.handle(scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/routing.py:290: in handle
+    await self.app(scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/fastapi/routing.py:124: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/fastapi/routing.py:110: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/fastapi/routing.py:390: in app
+    raw_response = await run_endpoint_function(
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/fastapi/routing.py:291: in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/starlette/concurrency.py:38: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/anyio/to_thread.py:56: in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <class 'anyio._backends._asyncio.AsyncIOBackend'>
+func = functools.partial(<function update_user at 0x79294c6268d0>, user_id=999, user=UserCreateSchema(username='max', email='max@max.com', password='new_secret'))
+args = (), abandon_on_cancel = False, limiter = None
+
+    @classmethod
+    async def run_sync_in_worker_thread(  # type: ignore[return]
+        cls,
+        func: Callable[[Unpack[PosArgsT]], T_Retval],
+        args: tuple[Unpack[PosArgsT]],
+        abandon_on_cancel: bool = False,
+        limiter: abc.CapacityLimiter | None = None,
+    ) -> T_Retval:
+        await cls.checkpoint()
+    
+        # If this is the first run in this event loop thread, set up the necessary
+        # variables
+        try:
+            idle_workers = _threadpool_idle_workers.get()
+            workers = _threadpool_workers.get()
+        except LookupError:
+            idle_workers = deque()
+            workers = set()
+            _threadpool_idle_workers.set(idle_workers)
+            _threadpool_workers.set(workers)
+    
+        async with limiter or cls.current_default_thread_limiter():
+            with CancelScope(shield=not abandon_on_cancel) as scope:
+                future = asyncio.Future[T_Retval]()
+                root_task = find_root_task()
+                if not idle_workers:
+                    worker = WorkerThread(root_task, workers, idle_workers)
+                    worker.start()
+                    workers.add(worker)
+                    root_task.add_done_callback(
+                        worker.stop, context=contextvars.Context()
+                    )
+                else:
+                    worker = idle_workers.pop()
+    
+                    # Prune any other workers that have been idle for MAX_IDLE_TIME
+                    # seconds or longer
+                    now = cls.current_time()
+                    while idle_workers:
+                        if (
+                            now - idle_workers[0].idle_since
+                            < WorkerThread.MAX_IDLE_TIME
+                        ):
+                            break
+    
+                        expired_worker = idle_workers.popleft()
+                        expired_worker.root_task.remove_done_callback(
+                            expired_worker.stop
+                        )
+                        expired_worker.stop()
+    
+                context = copy_context()
+                context.run(sniffio.current_async_library_cvar.set, None)
+                if abandon_on_cancel or scope._parent_scope is None:
+                    worker_scope = scope
+                else:
+                    worker_scope = scope._parent_scope
+    
+                worker.queue.put_nowait((context, func, args, future, worker_scope))
+>               return await future
+                       ^^^^^^^^^^^^
+E               RuntimeError: coroutine raised StopIteration
+
+/home/maxma/.cache/pypoetry/virtualenvs/dno-fastapi-async-vBC5puc5-py3.14/lib/python3.14/site-packages/anyio/_backends/_asyncio.py:2485: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/dno_fastapi_async/test_app.py::test_update_user_not_exists - RuntimeError: coroutine raised StopIteration
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+========================= 1 failed, 5 passed in 1.49s ==========================
